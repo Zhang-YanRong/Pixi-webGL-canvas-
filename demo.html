@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<body>
+    <canvas id="canvas"></canvas> <span>dd</span>
+</body>
+
+</html>
+<script>
+    // 思路  铅笔画图，笔触改变
+    // http://www.w3school.com.cn/tags/html_ref_canvas.asp  canvas api
+    const canvas = document.querySelector("#canvas");
+    const board = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let startX = 0,
+        startY = 0,
+        lastX = 0,
+        lastY = 0,
+        startDraw = false,
+        hsl = 0,
+        linewidth = 10,
+        direction = true;
+    // 铅笔画图  鼠标按下开始，抬起结束
+    // strokeStyle 设置或返回用于笔触的颜色、渐变或模式
+    // hsl 色彩饱和度  以30度为间隔 数值从0增到360 hsl(86, 100%, 50%)
+    // linewidth 线条粗细
+    var draw = e => {
+        if (startDraw) {
+            console.log(e.offsetX, e.offsetY);
+            board.strokeStyle = `hsl(${hsl}, 100%, 50%)`;
+            board.lineWidth = linewidth;
+            // 起始一条路径，或重置当前路径
+            board.beginPath();
+            board.lineCap = "round";
+            //   board.lineJoin = "round";
+            board.moveTo(lastX, lastY);
+            board.lineTo(e.offsetX, e.offsetY);
+            board.stroke();
+            hsl >= 360 ? 0 : hsl++;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+            if (linewidth >= 30 || linewidth <= 1) {
+                direction = !direction;
+            }
+            if (direction) {
+                linewidth++;
+            } else {
+                linewidth--;
+            }
+        }
+    };
+    // 建立多個新的變數可以用destructuring an array完成比較精簡，
+    // [lastX, lastY] = [e.offsetX, e.offsetY]
+    var upmouse = e => {
+        startDraw = false;
+        // lastX = e.offsetX;
+        // lastY = e.offsetY;
+    };
+    var downmouse = e => {
+        startDraw = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    };
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mousedown", downmouse);
+    canvas.addEventListener("mouseout", () => (startDraw = false));
+    canvas.addEventListener("mouseup", upmouse);
+</script>

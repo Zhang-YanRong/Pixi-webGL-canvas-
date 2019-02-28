@@ -370,3 +370,317 @@ function gameLoop(){
 }
 
 ```
+
+### 键盘移动
+``` bash 
+function keyboard(keyCode){
+    let key = {};
+    key.code = keyCode;
+    key.isDown = false;
+    key.isUp = true;
+    key.press = undefined;
+    key.release = undefind;
+    key.downHandler = event => {
+        if(event.keyCode === key.code){
+            if(key.isUp && key.press){
+                key.press()
+            }
+            key.isDown = true;
+            key.isUp = false;
+        }
+        event.preventDefault()
+    }
+    key.upHandler = event => {
+        if(event.keyCode === key.code){
+            if(key.isDown && key.release){
+                key.release()
+            }
+            key.isDown = false;
+            key.isUp = true;
+        }
+        event.preventDefault()
+    }
+    
+    window.addEventListener(
+        "keydown",key.downHandler.bind(key),false
+    )
+    window.addEventListener(
+        "keyup",key.upHandler.bind(key),false
+    )
+    return key;
+}
+
+//调用keyObject 
+let keyObject = keyboard(asciiKeyCodeNumber);
+keyObject.press = () => {
+
+}
+keyObject.release = () => {
+    
+}
+```
+
+#### 代码实例
+``` bash 
+let app = new PIXI.Application({
+    width: 256,
+    height: 256,
+    antialias: true,
+    transparent: false,
+    resolution: 1
+})
+document.body.appendChild(app.view)
+
+app.renderer.view.width = 600
+app.renderer.autoResize = true;
+app.renderer.resize(512,512)
+app.renderer.resize(window.innerWidth,window.innerHeight)
+
+PIXI.loader.add('./img/11.png').load(imgs)
+let cat,stage;
+
+function imgs() {
+    cat = new PIXI.Sprite(PIXI.loader.resources["./img/11.png"].texture)
+    cat.y = 96;
+    cat.vx = 0;
+    cat.vy = 0;
+    app.stage.addChild(cat)
+
+    let left = new Keyboard(37),
+        up = new Keyboard(38),
+        right = new Keyboard(39),
+        down = new Keyboard(40);
+    //按下左键
+    left.press = () =>{
+        cat.vx = -5;
+        cat.vy = 0;
+    }
+
+    //松开左键
+    left.release = () => {
+        if(!right.isDown && cat.vy === 0) {
+            cat.vx = 0;
+        }
+    }
+
+    //按下上键
+    up.press = () => {
+        cat.vy = -5;
+        cat.vx = 0;
+    }
+
+    //松开上键
+    up.release = () => {
+        if(!down.isDown && cat.vx === 0){
+            cat.vy = 0;
+        }
+    }
+
+    //按下右键
+    right.press = () => {
+        cat.vy = 0;
+        cat.vx = 5;
+    }
+
+    //松开右键
+    right.release = () => {
+        if(!down.isDown && cat.vy === 0){
+            cat.vx = 0;
+        }
+    }
+
+    //按下下键
+    down.press = () => {
+        cat.vy = 5;
+        cat.vx = 0;
+    };
+
+    // 松开下键
+    down.release = () => {
+        if (!up.isDown && cat.vx === 0) {
+            cat.vy = 0;
+        }
+    };
+
+    state = play;
+    app.ticker.add(delta => gameLoop(delta))
+    
+    function gameLoop(){
+        state()
+    }
+
+}
+function play(delta) {
+    cat.x += cat.vx;
+    cat.y += cat.vy;
+}
+
+
+function Keyboard(keyCode){
+    let that = this;
+    this.code = keyCode;
+    this.isDown = false;
+    this.isUp = true;
+    this.press = undefined;
+    this.release = undefined;
+    this.downHandler = event => {
+        if(event.keyCode === key.code){
+            if(key.isUp && key.press){
+                key.press()
+            }
+            key.isDown = true;
+            key.isUp = false;
+        }
+        event.preventDefault()
+    }
+
+    this.upHandler = event => {
+        if (event.keyCode === key.code) {
+            console.log(key,'up1')
+            if (key.isDown && key.release) {
+                key.release();
+            }
+            key.isDown = false;
+            key.isUp = true;
+        }
+        event.preventDefault();
+    };
+
+    window.addEventListener(
+        "keydown",that.downHandler.bind(this), false
+    );
+
+    window.addEventListener(
+        "keyup",that.upHandler.bind(this), false
+    );
+}
+```
+
+### 给精灵分组
+``` bash
+let cat = new PIXI>Sprite(["cat.png"])
+cat.positon.set(16,16)
+
+let hedgehog = new PIXI>Sprite(["hedgehog.png"])
+hedgehog.positon.set(32,32)
+
+let tiger = new PIXI>Sprite(["tiger.png"])
+tiger.positon.set(64,64)
+
+//创建一个animals容器（container）把他们聚合在一起
+let ainmals = new PIXI.Container();
+
+//然后用 addChild 去把精灵图 添加到分组中
+ainmals.addChild(cat)
+ainmals.addChild(hedgehog)
+ainmals.addChild(tiger)
+
+//最后把分组添加到舞台上（把三个精灵捆绑在一起，看作一个整体）
+app.stage.addChild(animals)
+
+//注：stage对象也是一个Container。它是所有Pixi精灵的根容器
+//操作animals，上面三个精灵会一起变动
+```
+``` bash
+//animals分组也有它自己的尺寸，它是以包含的精灵所占的区域计算出来的。你可以像这样来获取width和height的值：
+
+console.log(animals.width);
+console.log(animals.height);
+```
+### 局部位置和全局位置
+
+精灵图还有 全局位置 。全局位置是舞台左上角到精灵锚点（通常是精灵的左上角）的距离。你可以通过toGlobal方法的帮助找到精灵图的全局位置：
+``` bash
+animals.toGlobal(cat.position)
+```
+如果你想知道一个精灵的全局位置，但是不知道精灵的父容器怎么办？每个精灵图有一个属性叫parent 能告诉你精灵的父级是什么。在上面的例子中，猫的父级是 animals。这意味着你可以像如下代码一样得到猫的全局位置：
+``` bash
+cat.parent.toGlobal(cat.position);
+```
+#### 更好的获取全局位置的方式
+想知道精灵到canvas左上角的距离，但是不知道或者不关心精灵的父亲是谁，用getGlobalPosition方法:
+``` bash
+tiger.getGlobalPosition().x
+tiger.getGlobalPosition().y
+```
+#### 将全局位置转换成局部位置
+``` bash
+tiger.toLocal(tiger.position, hedgehog).x
+tiger.toLocal(tiger.position, hedgehog).y
+```
+### 精灵分组
+Pixi有一个额外的，高性能的方式去分组精灵的方法：ParticleContainer(PIXI.ParticleContainer)。任何在ParticleContainer里的精灵都会比在一个普通的Container的渲染速度快2到5倍：
+``` bash
+let superFastSprites = new PIXI.particles.ParticleContainer()
+//然后用addChild去往里添加精灵，就像往普通的Container添加一样
+```
+如果决定用ParticleContainer，就必须做出一些妥协。在ParticleContainer里的精灵图只有一小部分基本属性：x,y,width,height,scale.pivot,alpha,visble这几个，并且它包含的精灵不能再继续嵌套自己的孩子精灵。particleContainer也不能用Pixi的现金视觉效果如过滤器和混合模式，每个PaticleContainer只能用一个纹理（所以想精灵有不同的表现方式就必须更换雪碧图），但是项目中可以同时用Container和ParticleContainer
+
+##### ParticleContainer性能高的原因是精灵位置直接在GPU上计算的
+
+ParticleContainer有四个参数（size,properties,batchSize,autoResize）：
+``` bash
+let superFastSprites = new ParticleContainer(maxSize,properties,batcheSize,autoResize)
+```
+> 1.默认的maxSize是1500
+> 2.properties是一个有五个布尔值的对象：scale,position,rotation,uvs和alpha(默认的position是true,其他都为false) :
+>let superFastSprites = new ParticleContainer(
+  size,
+  {
+    rotation: true,
+    alphaAndtint: true,
+    scale: true,
+    uvs: true
+  }
+);
+> 3.uvs：只有在动画需要时盖面纹理子图像的时候需要设置为true(注意：UV mapping 是一个3D图表展示术语，它指纹理（图片）准备映射到三维表面的x和y的坐标，U 是 x 轴，V 是 y 轴， WebGL用 x, y 和 z 来进行三维空间定位，所以U 和 V 被选为表示2D图片纹理的 x 和 y)
+
+### Pixi绘制几何图形
+#### 矩形
+``` bash
+//创造一个Pixi的Graphics类的实例
+let rectangle = new PIXI.Graphics()
+
+使用beginFill和一个16进制的颜色值填充
+rectangle.beginFill(0x66CCFF)
+
+//给图形设置一个轮廓，使用lineStyle方法，设置一个宽4像素，alpha值为1的红色轮廓
+rectangle.lineStyle(4, 0xFF3300, 1);
+
+//调用drawRect方法来画一个矩形。它的四个参数是x, y, width 和 height。
+rectangle.drawRect(x,y,width,height)
+
+//endFill表示绘制结束
+rectangle.endFill()
+
+//设置矩形的起点
+rectangle.x = 170;
+rectangle.y = 170;
+
+app.stage.addChild(rectangle)
+```
+#### 圆形
+调用drawCircle方法来创造一个圆，他的三个参数是x,y和radius
+> drawCircle(x,y,radius)
+``` bash
+let circle = new PIXI.Graphics()
+circle.beginFill(0x9966FF);
+circle.drawCircle(0,0,32)
+circle.endFill();
+circle.x = 64;
+circle.y = 130;
+app.stage.addChild(circle)
+```
+#### 椭圆
+drawEllipse 是一个卓越的Canvas绘画api，Pixi也能调用drawEllipse来绘制椭圆
+> drawEllipse(x,y,width,height)
+> x/y表示圆心，也是默认起点
+``` bash 
+let ellipse = new PIXI.Graphics();
+ellipse.beginFill(0xFFFF0);
+ellipse.drawEllipse(0,0,50,20)
+ellipse.endFill();
+ellipse.x = 180;
+ellipse.y = 130;
+app.stage.addChild(ellipse);
+```

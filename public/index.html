@@ -245,48 +245,205 @@ PIXI.loader.add('./img/11.png').load(imgs)
 // sprite.x += 1
 // }
 
+// =======================================================================
+// let cat;
+// function imgs(){
+//     cat = new PIXI.Sprite(PIXI.loader.resources['./img/11.png'].texture)
+//     cat.x = 0;
+//     cat.y = 20;
+//     cat.vx = 0;
+//     cat.vy = 0;
+//     app.stage.addChild(cat)
+//     gameLoop()
+// }
+// let a = 0;
+// function gameLoop(){
+//     requestAnimationFrame(gameLoop)
+//     if(a < 10){
+//         cat.vx = 1;
+//         cat.vy = 1;
+//     }else if(a > 100 & a < 200){
+//         cat.vx = 0.5;
+//         cat.vy = 1.5;
+//     }else if(a > 200 & a < 300){
+//         cat.vx = -0.5;
+//         cat.vy = -1;
+//     }else if(a > 300 & a < 400){
+//         cat.vx = -1;
+//         cat.vy = -0.5;
+//     }else if(a > 400 & a < 500){
+//         cat.vx = 0.5;
+//         cat.vy = 1.5;
+//     }else if(a > 500 & a < 600){
+//         cat.vx = 0.5;
+//         cat.vy = 1.5;
+//     }else if(a > 600 & a < 700){
+//         cat.vx = 5;
+//         cat.vy = -3;
+//     }else if(a > 700 & a < 800){
+//         cat.vx = 5;
+//         cat.vy = 3;
+//     }
+//     cat.x += cat.vx;
+//     cat.y += cat.vy;
+//     a++
+// }
+// =============================================================================================
 
-let cat;
-function imgs(){
-    cat = new PIXI.Sprite(PIXI.loader.resources['./img/11.png'].texture)
-    cat.x = 0;
-    cat.y = 20;
-    cat.vx = 0;
-    cat.vy = 0;
-    app.stage.addChild(cat)
-    gameLoop()
-}
-let a = 0;
-function gameLoop(){
-    requestAnimationFrame(gameLoop)
-    if(a < 10){
-        cat.vx = 1;
-        cat.vy = 1;
-    }else if(a > 100 & a < 200){
-        cat.vx = 0.5;
-        cat.vy = 1.5;
-    }else if(a > 200 & a < 300){
-        cat.vx = -0.5;
-        cat.vy = -1;
-    }else if(a > 300 & a < 400){
-        cat.vx = -1;
-        cat.vy = -0.5;
-    }else if(a > 400 & a < 500){
-        cat.vx = 0.5;
-        cat.vy = 1.5;
-    }else if(a > 500 & a < 600){
-        cat.vx = 0.5;
-        cat.vy = 1.5;
-    }else if(a > 600 & a < 700){
-        cat.vx = 5;
-        cat.vy = -3;
-    }else if(a > 700 & a < 800){
-        cat.vx = 5;
-        cat.vy = 3;
-    }
-    cat.x += cat.vx;
-    cat.y += cat.vy;
-    a++
-}
+// let cat,stage;
 
+// function imgs() {
+//     cat = new PIXI.Sprite(PIXI.loader.resources["./img/11.png"].texture)
+//     cat.y = 96;
+//     cat.vx = 0;
+//     cat.vy = 0;
+//     app.stage.addChild(cat)
+
+//     let left = new Keyboard(37),
+//         up = new Keyboard(38),
+//         right = new Keyboard(39),
+//         down = new Keyboard(40);
+//     //按下左键
+//     left.press = () =>{
+//         cat.vx = -5;
+//         cat.vy = 0;
+//     }
+
+//     //松开左键
+//     left.release = () => {
+//         if(!right.isDown && cat.vy === 0) {
+//             cat.vx = 0;
+//         }
+//     }
+
+//     //按下上键
+//     up.press = () => {
+//         cat.vy = -5;
+//         cat.vx = 0;
+//     }
+
+//     //松开上键
+//     up.release = () => {
+//         if(!down.isDown && cat.vx === 0){
+//             cat.vy = 0;
+//         }
+//     }
+
+//     //按下右键
+//     right.press = () => {
+//         cat.vy = 0;
+//         cat.vx = 5;
+//     }
+
+//     //松开右键
+//     right.release = () => {
+//         if(!down.isDown && cat.vy === 0){
+//             cat.vx = 0;
+//         }
+//     }
+
+//     //按下下键
+//     down.press = () => {
+//         cat.vy = 5;
+//         cat.vx = 0;
+//     };
+
+//     // 松开下键
+//     down.release = () => {
+//         if (!up.isDown && cat.vx === 0) {
+//             cat.vy = 0;
+//         }
+//     };
+
+//     state = play;
+//     app.ticker.add(delta => gameLoop(delta))
+    
+//     function gameLoop(){
+//         state()
+//     }
+
+// }
+// function play(delta) {
+//     cat.x += cat.vx;
+//     cat.y += cat.vy;
+// }
+
+
+// function Keyboard(keyCode){
+//     let that = this;
+//     this.code = keyCode;
+//     this.isDown = false;
+//     this.isUp = true;
+//     this.press = undefined;
+//     this.release = undefined;
+//     this.downHandler = event => {
+//         if(event.keyCode === key.code){
+//             if(key.isUp && key.press){
+//                 key.press()
+//             }
+//             key.isDown = true;
+//             key.isUp = false;
+//         }
+//         event.preventDefault()
+//     }
+
+//     this.upHandler = event => {
+//         if (event.keyCode === key.code) {
+//             console.log(key,'up1')
+//             if (key.isDown && key.release) {
+//                 key.release();
+//             }
+//             key.isDown = false;
+//             key.isUp = true;
+//         }
+//         event.preventDefault();
+//     };
+
+//     window.addEventListener(
+//         "keydown",that.downHandler.bind(this), false
+//     );
+
+//     window.addEventListener(
+//         "keyup",that.upHandler.bind(this), false
+//     );
+// }
+// ===========================================================================================
+function imgs() {
+//创造一个Pixi的Graphics类的实例
+let rectangle = new PIXI.Graphics()
+
+// 使用beginFill和一个16进制的颜色值填充
+rectangle.beginFill(0xFFB6C1)
+
+//给图形设置一个轮廓，使用lineStyle方法，设置一个宽4像素，alpha值为1的红色轮廓
+rectangle.lineStyle(4, 0xFF3300, 1);
+
+// 调用drawRect方法来画一个矩形。它的四个参数是x（对相对起点的x偏移量）, y（对相对起点的y偏移量）, width 和 height。
+rectangle.drawRect(100,100,200,200)
+
+//endFill表示绘制结束
+rectangle.endFill()
+
+//设置矩形的相对起点
+rectangle.x = 170;
+rectangle.y = 170;
+
+app.stage.addChild(rectangle)
+
+let circle = new PIXI.Graphics()
+circle.beginFill(0x9966FF);
+circle.drawCircle(0,0,32)
+circle.endFill();
+circle.x = 64;
+circle.y = 130;
+app.stage.addChild(circle)
+
+let ellipse = new PIXI.Graphics();
+ellipse.beginFill(0xFFFF0);
+ellipse.drawEllipse(0,0,50,20)
+ellipse.endFill();
+// ellipse.x = 180;
+// ellipse.y = 130;
+app.stage.addChild(ellipse);
+}
 </script>

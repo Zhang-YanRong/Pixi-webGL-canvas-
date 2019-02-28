@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.6/vue.js"></script>
 </head>
 <style>
 .box{
@@ -28,8 +29,38 @@
 }
 </style>
 <body>
-    <div class="box">
+    <!-- <div class="box">
 
+    </div> -->
+    <div id="app">
+        <input type="text" v-if="show" placeholder="请输入手机号">
+        <input type="text" v-else placeholder="请输入验证码">
+        <button @click="submit">{{text}}</button>
     </div>
 </body>
 </html>
+<script>
+//     function down() {
+//         console.log("down")
+//     }
+//     function up() {
+//         console.log("up")
+//     }
+// window.addEventListener("keydown",down,false)
+// window.addEventListener("keyup",up,false)
+
+
+var vm = new Vue({
+    el:"#app",
+    data:{
+        show:true,
+        text:"submit"
+    },
+    methods:{
+        submit(){
+            this.show = false
+        }
+    },
+    
+})
+</script>
